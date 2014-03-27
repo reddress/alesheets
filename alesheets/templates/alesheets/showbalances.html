@@ -1,0 +1,36 @@
+<html>
+  <body>
+    {% include "alesheets/allaccts.html" %}
+
+    <table width="700" border="1">
+      <thead>
+        <td width="20%">Assets</td>
+        <td width="20%">Expenses</td>
+        <td width="20%">Liabilities</td>
+        <td width="20%">Equity</td>
+        <td width="20%">Income</td>
+      </thead>
+      <tbody>
+        <tr>
+          {% for type in type_balances %}
+          <td valign="top" align="right">
+            <table border="1">
+              {% autoescape off %}
+              {% for balance in type %}
+              {{ balance }}
+              {% endfor %}
+              {% endautoescape %}
+            </table>
+          </td>
+          {% endfor %}
+        </tr>
+        <tr>
+          {% for type in type_totals %}
+          <td align="right">{{ type }}</td>
+          {% endfor %}
+        </tr>
+      </tbody>      
+    </table>
+  </body>
+</html>
+

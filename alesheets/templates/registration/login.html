@@ -1,0 +1,10 @@
+<html>
+  <body>
+    Login<br><br>
+    <form action="/alesheets/dologin/" method="post">
+    {{ form.as_table }}<br><br>
+    <input type="submit">
+    {% csrf_token %}
+    </form>
+  </body>
+</html>

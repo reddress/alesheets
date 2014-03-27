@@ -1,0 +1,34 @@
+<html>
+  <body>
+    {% include "alesheets/allaccts.html" %}
+    {{ account_name }} ({{ account_short_name }})
+    <a href="/admin/alesheets/transaction/add/" target="alesheets_admin">Add Transaction</a>
+
+    <table border="1">
+      <thead>
+        <td width="5%">ID</td>
+        <td width="20%">Date</td>
+        <td width="45%">Description</td>
+        <td width="10%">Debit</td>
+        <td width="10%">Credit</td>
+        <td width="10%">Balance</td>
+      </thead>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>Last balance</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>{{ last_balance }}</td>
+      </tr>
+      <tbody>
+      {% autoescape off %}
+      {% for transaction in transactions %}
+      {{ transaction }}
+      {% endfor %}
+      {% endautoescape %}
+      </tbody>
+    </table>
+  </body>
+</html>
+

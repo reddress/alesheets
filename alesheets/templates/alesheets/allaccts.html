@@ -1,0 +1,30 @@
+<a href="/alesheets/logout/">Log out</a> | <a href="/alesheets/balances">All balances</a><br>
+[Dr INC, Cr DEC]
+
+Assets:
+{% for account in asset_accounts %}
+<a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
+{% endfor %}
+<br>
+| Expenses:
+{% for account in expense_accounts %}
+<a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
+{% endfor %}
+<br>
+
+[Dr DEC, Cr INC]
+Liabilities:
+{% for account in liability_accounts %}
+<a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
+{% endfor %}
+
+| Equity:
+{% for account in equity_accounts %}
+<a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
+{% endfor %}
+
+| Income:
+{% for account in income_accounts %}
+<a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
+{% endfor %}
+<hr>

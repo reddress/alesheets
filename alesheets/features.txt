@@ -1,0 +1,10 @@
+page with balances for all accounts
+
+(check gnucash image) Create Opening balances under Equity
+
+
+
+added
+-----
+add some kind of authentication
+
