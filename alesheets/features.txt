@@ -1,10 +1,14 @@
-page with balances for all accounts
-
-(check gnucash image) Create Opening balances under Equity
-
-
-
 added
 -----
 add some kind of authentication
 
+page with balances for all accounts
+
+(check gnucash image) Create Opening balances under Equity
+
+add "31-day change" row in current account details
+period_change = final balance value - last_balance
+
+add view for all 31-day changes on balances (use gte like in show_account)
+
+add "all transactions" view for each account (copy and paste)

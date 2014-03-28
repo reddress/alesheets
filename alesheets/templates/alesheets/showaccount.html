@@ -1,7 +1,12 @@
 <html>
   <body>
     {% include "alesheets/allaccts.html" %}
-    {{ account_name }} ({{ account_short_name }})
+    {{ account_name }}
+    "{{ account_short_name }}" <a href="/alesheets/account/{{ account_short_name }}">see last 31 days</a>
+    <br>
+    <a href="/alesheets/accountall/{{ account_short_name }}/">All Transactions for {{ account_short_name }}</a>
+    <br><br>
+    <b>{{ report_type }}</b>
     <a href="/admin/alesheets/transaction/add/" target="alesheets_admin">Add Transaction</a>
 
     <table border="1">
@@ -27,6 +32,11 @@
       {{ transaction }}
       {% endfor %}
       {% endautoescape %}
+      <tr>
+        <td colspan="6" align="right">
+          <b>Balance change: {{ balance_change }}</b>
+        </td>
+      </tr>
       </tbody>
     </table>
   </body>

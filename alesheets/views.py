@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from itertools import chain
 from datetime import datetime, timedelta
 
@@ -80,11 +78,13 @@ def show_account(request, short_name):
                               key=lambda tr: tr.date)
     all_transactions = []
     balance = get_balance_not_shown(account)
-    print(balance)
+
     for transaction in raw_transactions:
         row_data = get_transaction_html(transaction, account, balance)
         all_transactions.append(row_data[0])
         balance = row_data[1]
+
+    balance_change = balance - last_balance
         
     return render(request, 'alesheets/showaccount.html',
                   {'account_name': account.name,
@@ -95,7 +95,48 @@ def show_account(request, short_name):
                    'liability_accounts': liability_accounts,
                    'equity_accounts': equity_accounts,
                    'income_accounts': income_accounts,
-                   'last_balance': "%.2f" % last_balance,})
+                   'last_balance': "%.2f" % last_balance,
+                   'balance_change': "%.2f" % balance_change,
+                   'report_type': "Last 31 days", })
+
+@login_required
+def show_account_all(request, short_name):
+    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+    
+    account = get_object_or_404(Account, short_name=short_name)
+    last_balance = 0
+    
+    debit_transactions = Transaction.objects.filter(debit=account)
+    credit_transactions = Transaction.objects.filter(credit=account)
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
+    all_transactions = []
+    balance = 0
+
+    for transaction in raw_transactions:
+        row_data = get_transaction_html(transaction, account, balance)
+        all_transactions.append(row_data[0])
+        balance = row_data[1]
+
+    balance_change = balance - last_balance
+        
+    return render(request, 'alesheets/showaccount.html',
+                  {'account_name': account.name,
+                   'account_short_name': account.short_name,
+                   'transactions': all_transactions,
+                   'asset_accounts': asset_accounts,
+                   'expense_accounts': expense_accounts,
+                   'liability_accounts': liability_accounts,
+                   'equity_accounts': equity_accounts,
+                   'income_accounts': income_accounts,
+                   'last_balance': "%.2f" % last_balance,
+                   'balance_change': "%.2f" % balance_change,
+                   'report_type': "All transactions", })
 
 def get_balance_html(account):
     balance = 0
@@ -115,6 +156,39 @@ def get_balance_value(account):
     balance = 0
     debit_transactions = Transaction.objects.filter(debit=account)
     credit_transactions = Transaction.objects.filter(credit=account)
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
+    for transaction in raw_transactions:
+        sign = account.type.sign_modifier
+        if str(transaction.credit) == str(account.short_name):
+            sign *= -1
+        balance += sign * transaction.value
+    return balance
+
+def get_balance_html_latest(account):
+    balance = 0
+    debit_transactions = Transaction.objects.filter(debit=account,
+                            date__gte=(datetime.today()-timedelta(days=31)))
+
+    credit_transactions = Transaction.objects.filter(credit=account,
+                            date__gte=(datetime.today()-timedelta(days=31)))
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
+    for transaction in raw_transactions:
+        sign = account.type.sign_modifier
+        if str(transaction.credit) == str(account.short_name):
+            sign *= -1
+        balance += sign * transaction.value
+    return '<tr><td><a href="/alesheets/account/%s/">%s</a></td><td align="right">%.2f</td></tr>' % (account.short_name, account.short_name, balance)
+
+def get_balance_value_latest(account):
+    balance = 0
+    debit_transactions = Transaction.objects.filter(debit=account,
+                            date__gte=(datetime.today()-timedelta(days=31)))
+    credit_transactions = Transaction.objects.filter(credit=account,
+                            date__gte=(datetime.today()-timedelta(days=31)))
     raw_transactions = sorted(chain(debit_transactions,
                                     credit_transactions),
                               key=lambda tr: tr.date)
@@ -166,7 +240,36 @@ def show_balances(request):
                    'expense_accounts': expense_accounts,
                    'liability_accounts': liability_accounts,
                    'equity_accounts': equity_accounts,
-                   'income_accounts': income_accounts})
+                   'income_accounts': income_accounts,
+                   'report_type': "All transactions", })
+
+@login_required
+def balance_changes(request):
+    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+
+    account_types = [asset_accounts, expense_accounts, liability_accounts,
+                     equity_accounts, income_accounts]
+    type_balances = []
+    type_totals = []
+    for type in account_types:
+        # map get_balance for all accounts in asset_accounts,
+        # expense_accounts, etc. then place it in type_balances
+        type_balances.append(map(get_balance_html_latest, type))
+        type_totals.append("%.2f" % sum(map(get_balance_value_latest, type)))
+        
+    return render(request, 'alesheets/showbalances.html',
+                  {'type_balances': type_balances,
+                   'type_totals': type_totals,
+                   'asset_accounts': asset_accounts,
+                   'expense_accounts': expense_accounts,
+                   'liability_accounts': liability_accounts,
+                   'equity_accounts': equity_accounts,
+                   'income_accounts': income_accounts,
+                   'report_type': "Transactions in the last 31 days", })
 
 def user_login(request):
     username = request.POST['username']
