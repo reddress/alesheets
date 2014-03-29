@@ -10,4 +10,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^alesheets/', include('alesheets.urls')),
+    url(r'^$', 'alesheets.views.index'),
 )
