@@ -29,15 +29,18 @@ def get_transaction_html(transaction, account, balance):
         sign *= -1
         
     new_balance = balance + (sign * transaction.value)
+
+    wkdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     table_row = """<tr>
     <td><a href="/admin/alesheets/transaction/%s/" target="alesheets_admin">
           %s</a</td>
-    <td>%s/%s/%s %02d:%02d</td> <!-- Date -->
+    <td>%s %s/%s/%s %02d:%02d</td> <!-- Date -->
     <td>%s</td> <!-- Description -->""" % (transaction.id,
                                            transaction.id,
-                                           transaction.date.year,
-                                           transaction.date.month,
+                                           wkdays[transaction.date.weekday()],
                                            transaction.date.day,
+                                           transaction.date.month,
+                                           transaction.date.year,
                                            transaction.date.hour,
                                            transaction.date.minute,
                                            transaction.description)
