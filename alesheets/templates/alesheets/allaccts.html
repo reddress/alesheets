@@ -2,8 +2,6 @@
 <a href="/admin/alesheets/transaction/add/" target="alesheets_admin">Add Transaction</a> |
 <a href="/alesheets/balances">All balances</a> |
 <a href="/alesheets/balchanges">Balance changes (last 31 days)</a><br>
-[Dr INC, Cr DEC]
-
 Assets:
 {% for account in asset_accounts %}
 <a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
@@ -15,7 +13,6 @@ Assets:
 {% endfor %}
 <br>
 
-[Dr DEC, Cr INC]
 Liabilities:
 {% for account in liability_accounts %}
 <a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 
