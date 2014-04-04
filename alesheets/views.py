@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .models import Owner, AccountType, Account, Transaction
 
@@ -60,7 +61,47 @@ def get_transaction_html(transaction, account, balance):
     table_row += '<td>%.2f</td></tr>' % new_balance
     
     return (table_row, new_balance)
-        
+
+@login_required
+def show_category(request, category_name, days_back):
+    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+
+    raw_transactions = Transaction.objects.filter(Q(debit__type__name=category_name),
+        date__gte=(datetime.today() - timedelta(days=int(days_back))))
+    sorted_transactions = list(reversed(sorted(raw_transactions, key=lambda tr: tr.date)))
+    total = sum([tr.value for tr in sorted_transactions])
+
+    daily_totals = {}
+    for tr in sorted_transactions:
+        short_date = "%s-%02d-%02d" % (tr.date.year, tr.date.month, tr.date.day)
+        if short_date not in daily_totals:
+            daily_totals[short_date] = tr.value
+        else:
+            daily_totals[short_date] += tr.value
+
+    daily_totals_pair = []
+    for day in reversed(sorted(daily_totals)):
+        daily_totals_pair.append((day, daily_totals[day]))
+    
+    return render(request, 'alesheets/showcategory.html',
+                  {'account_name': category_name,
+                   'account_short_name': category_name,
+                   'transactions': sorted_transactions,
+                   'asset_accounts': asset_accounts,
+                   'expense_accounts': expense_accounts,
+                   'liability_accounts': liability_accounts,
+                   'equity_accounts': equity_accounts,
+                   'income_accounts': income_accounts,
+                   'last_balance': "0.00",
+                   'balance_change': "0.00",
+                   'total': total,
+                   'daily_totals': daily_totals_pair,
+                   'report_type': "Transactions in the last %d days" % int(days_back), })
+    
 @login_required
 def show_account(request, short_name):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')

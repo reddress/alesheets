@@ -36,11 +36,11 @@ class Transaction(models.Model):
     debit = models.ForeignKey(Account, related_name="+")
     credit = models.ForeignKey(Account, related_name="+")
     def __unicode__(self):
-        format_string = "%s/%s/%s %s [%.2f %s | %s]"
+        format_string = "%s/%s/%s [%.2f %s | %s] %s"
         return format_string % (self.date.day, self.date.month,
                                 self.date.year, 
-                                self.description[:80],
                                 self.value,
-                                self.debit, self.credit)
+                                self.debit, self.credit,
+                                self.description[:80], )
     def __str__(self):
         return self.__unicode__()
