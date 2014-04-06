@@ -148,6 +148,60 @@ def show_account(request, short_name):
                    'report_type': "Last 31 days", })
 
 @login_required
+def show_account_custom_date(request, short_name, start_year, start_month,
+                             start_day, end_year, end_month, end_day):
+    start_year = int(start_year)
+    start_month = int(start_month)
+    start_day = int(start_day)
+    end_year = int(end_year)
+    end_month = int(end_month)
+    end_day = int(end_day)
+    start_date = datetime(start_year, start_month, start_day, 0, 0)
+    end_date = datetime(end_year, end_month, end_day, 23, 59)
+    
+    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+    
+    account = get_object_or_404(Account, short_name=short_name)
+    # set to zero, or else must alter get_bal_not_shown function
+    last_balance = 0
+    
+    debit_transactions = Transaction.objects.filter(debit=account,
+                            date__gt=start_date, date__lt=end_date)
+    credit_transactions = Transaction.objects.filter(credit=account,
+                            date__gt=start_date, date__lt=end_date)
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
+    all_transactions = []
+    balance = 0
+
+    for transaction in raw_transactions:
+        row_data = get_transaction_html(transaction, account, balance)
+        all_transactions.append(row_data[0])
+        balance = row_data[1]
+
+    balance_change = balance - last_balance
+        
+    return render(request, 'alesheets/showaccount.html',
+                  {'account_name': account.name,
+                   'account_short_name': account.short_name,
+                   'transactions': all_transactions,
+                   'asset_accounts': asset_accounts,
+                   'expense_accounts': expense_accounts,
+                   'liability_accounts': liability_accounts,
+                   'equity_accounts': equity_accounts,
+                   'income_accounts': income_accounts,
+                   'last_balance': "%.2f" % last_balance,
+                   'balance_change': "%.2f" % balance_change,
+                   'report_type': "Custom dates",
+                   'start_date': start_date,
+               })
+    
+@login_required
 def show_account_all(request, short_name):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')

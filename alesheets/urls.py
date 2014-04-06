@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = patterns('',
                        url(r'^$', views.index),
+                       url(r'^account/(?P<short_name>\S+)/(?P<start_day>\d+)/(?P<start_month>\d+)/(?P<start_year>\d+)/(?P<end_day>\d+)/(?P<end_month>\d+)/(?P<end_year>\d+)/$', views.show_account_custom_date),
                        url(r'^account/(?P<short_name>\S+)/$', views.show_account),
                        url(r'^accountall/(?P<short_name>\S+)/$', views.show_account_all),
                        url(r'^category/(?P<category_name>\S+)/(?P<days_back>\d+)/$', views.show_category),

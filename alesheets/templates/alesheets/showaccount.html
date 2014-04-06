@@ -8,7 +8,7 @@
   <body>
     {% include "alesheets/allaccts.html" %}
     {{ account_name }}
-    "{{ account_short_name }}" <a href="/alesheets/account/{{ account_short_name }}">see last 31 days</a> | <a href="/alesheets/accountall/{{ account_short_name }}/">All Transactions for {{ account_short_name }}</a>
+    "{{ account_short_name }}" <a href="/alesheets/account/{{ account_short_name }}">see last 31 days</a> | <a href="/alesheets/accountall/{{ account_short_name }}/">All Transactions for {{ account_short_name }}</a> | or enter start date - end date in URL bar, formatted as day/month/year, no leading zeros
     <br>
     <a href="/admin/alesheets/transaction/add/" target="alesheets_admin">Add Transaction</a>
     <br><br>
