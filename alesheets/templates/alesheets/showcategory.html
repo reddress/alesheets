@@ -21,12 +21,17 @@
     <b>{{ report_type }}, Total:</b> {{ total }}
 
     <pre>
-      {% for day, daily_total in daily_totals %}
-      {{ day }}  {{ daily_total|floatformat:2 }}
-      {% endfor %}
+      Credit transactions (should be empty):
+      {% for transaction in credit_transactions %} {{ transaction }} {% endfor %}
+
+      Daily totals:
       
+      {% for day, daily_total in daily_totals %} {{ day }}  {{ daily_total|floatformat:2 }}
+      {% endfor %}
+
+      Debit transactions:
       {% for transaction in transactions %}
-      {{ transaction }}
+       {{ transaction }}
       {% endfor %}
     </pre>
   </body>

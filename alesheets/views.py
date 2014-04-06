@@ -86,11 +86,15 @@ def show_category(request, category_name, days_back):
     daily_totals_pair = []
     for day in reversed(sorted(daily_totals)):
         daily_totals_pair.append((day, daily_totals[day]))
+
+    credit_transactions = Transaction.objects.filter(credit__type__name=category_name)
+    
     
     return render(request, 'alesheets/showcategory.html',
                   {'account_name': category_name,
                    'account_short_name': category_name,
                    'transactions': sorted_transactions,
+                   'credit_transactions': credit_transactions,
                    'asset_accounts': asset_accounts,
                    'expense_accounts': expense_accounts,
                    'liability_accounts': liability_accounts,
