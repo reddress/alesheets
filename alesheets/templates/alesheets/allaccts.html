@@ -1,7 +1,10 @@
 <a href="/alesheets/logout/">Log out</a> |
 <a href="/admin/alesheets/transaction/add/" target="alesheets_admin">Add Transaction</a> |
 <a href="/alesheets/balances">All balances</a> |
-<a href="/alesheets/balchanges">Balance changes (last 31 days)</a><br>
+<a href="/alesheets/balchanges">Balance changes (last 31 days)</a>
+<input id="keyword" onkeyup="document.getElementById('search_link').href='/alesheets/search/'+document.getElementById('keyword').value" onkeydown="if (event.keyCode==13) document.getElementById('search_link').click()">
+<a href="/alesheets/search/" id="search_link">search</a>
+<br>
 Assets:
 {% for account in asset_accounts %}
 <a href="/alesheets/account/{{ account.short_name }}/">{{account.short_name }}</a> | 

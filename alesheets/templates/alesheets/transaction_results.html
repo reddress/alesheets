@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>
+      ALE Sheets welcomes you
+    </title>
+  </head>
+  <body>
+{% include "alesheets/allaccts.html" %}
+
+<a href="/admin/alesheets/transaction/add/" target="alesheets_admin">Add Transaction</a>
+
+<pre>
+{% for transaction in transactions %}{{ transaction }}
+{% endfor %}
+</pre>
+  </body>
+</html>

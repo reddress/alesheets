@@ -373,6 +373,41 @@ def balance_changes(request):
                    'income_accounts': income_accounts,
                    'report_type': "Transactions in the last 31 days", })
 
+def search_transactions(request, keyword):
+    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+
+    transactions = Transaction.objects.filter(description__icontains=keyword).order_by('date').reverse()
+
+    return render(request, 'alesheets/transaction_results.html',
+                  {'asset_accounts': asset_accounts,
+                   'expense_accounts': expense_accounts,
+                   'liability_accounts': liability_accounts,
+                   'equity_accounts': equity_accounts,
+                   'income_accounts': income_accounts,
+                   'transactions': transactions,})
+
+def search_none(request):
+    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+
+    transactions = ["Enter search term on the address bar"]
+    
+    return render(request, 'alesheets/transaction_results.html',
+                  {'asset_accounts': asset_accounts,
+                   'expense_accounts': expense_accounts,
+                   'liability_accounts': liability_accounts,
+                   'equity_accounts': equity_accounts,
+                   'income_accounts': income_accounts,
+                   'transactions': transactions,})
+    
+        
 def user_login(request):
     username = request.POST['username']
     password = request.POST['password']
