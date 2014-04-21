@@ -1,3 +1,10 @@
+>> create module for transactions and accounts outside views.py
+
+>> use tablesorter
+
+>> save "global" time window in session or url so that clicking on different
+links looks only at transactions in this time window
+
 >> create functions that retrieve transactions matching account name and
 dates. 
 
@@ -32,3 +39,4 @@ in the context_processor.py add a function like this:
 def remote_ip(request):
   return {'remote_ip': request.META['REMOTE_ADDR']}
 use it in the templates like {{ remote_ip }}
+

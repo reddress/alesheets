@@ -1,4 +1,0 @@
-tablesorter
-
-combine debits and credits, assign side, sort by date, compute balances,
-export new resulting table (maybe already as html) to template
