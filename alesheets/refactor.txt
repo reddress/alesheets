@@ -1,3 +1,5 @@
+>> remove html from views.py
+
 >> search for earliest transaction date and use it as "beginning of time"
 
 >> create module for transactions and accounts outside views.py
