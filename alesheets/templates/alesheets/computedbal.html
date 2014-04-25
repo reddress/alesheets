@@ -1,0 +1,21 @@
+<html>
+  <body>
+    {% include "alesheets/allaccts.html" %}
+    <pre>
+      {% for acct in balances %}{{ acct }}{{ acct.value }}
+      {% endfor %}
+    </pre>
+    {% autoescape off %}
+    {{ categories.Asset }}
+
+    {{ categories.Expense }}
+
+    {{ categories.Liability }}
+
+    {{ categories.Equity }}
+
+    {{ categories.Income }}
+    {% endautoescape %}
+  </body>
+</html>
+

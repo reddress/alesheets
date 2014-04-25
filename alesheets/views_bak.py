@@ -242,14 +242,11 @@ def show_account_all(request, short_name):
 
 def get_balance_html(account):
     balance = 0
-    
     debit_transactions = Transaction.objects.filter(debit=account)
     credit_transactions = Transaction.objects.filter(credit=account)
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
-    
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
     for transaction in raw_transactions:
         sign = account.type.sign_modifier
         if str(transaction.credit) == str(account.short_name):
@@ -259,14 +256,11 @@ def get_balance_html(account):
 
 def get_balance_value(account):
     balance = 0
-
     debit_transactions = Transaction.objects.filter(debit=account)
     credit_transactions = Transaction.objects.filter(credit=account)
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
-    
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
     for transaction in raw_transactions:
         sign = account.type.sign_modifier
         if str(transaction.credit) == str(account.short_name):
@@ -281,11 +275,9 @@ def get_balance_html_latest(account, days_back):
 
     credit_transactions = Transaction.objects.filter(credit=account,
                     date__gte=(datetime.today()-timedelta(days=days_back)))
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
-    
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
     for transaction in raw_transactions:
         sign = account.type.sign_modifier
         if str(transaction.credit) == str(account.short_name):
@@ -295,16 +287,13 @@ def get_balance_html_latest(account, days_back):
 
 def get_balance_value_latest(account, days_back):
     balance = 0
-
     debit_transactions = Transaction.objects.filter(debit=account,
                         date__gte=(datetime.today()-timedelta(days=days_back)))
     credit_transactions = Transaction.objects.filter(credit=account,
                         date__gte=(datetime.today()-timedelta(days=days_back)))
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
-        
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
     for transaction in raw_transactions:
         sign = account.type.sign_modifier
         if str(transaction.credit) == str(account.short_name):
@@ -318,11 +307,9 @@ def get_balance_not_shown(account):
                             date__lt=(datetime.today()-timedelta(days=31)))
     credit_transactions = Transaction.objects.filter(credit=account,
                             date__lt=(datetime.today()-timedelta(days=31)))               
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
-    
+    raw_transactions = sorted(chain(debit_transactions,
+                                    credit_transactions),
+                              key=lambda tr: tr.date)
     for transaction in raw_transactions:
         sign = account.type.sign_modifier
         if str(transaction.credit) == str(account.short_name):
@@ -426,50 +413,7 @@ def search_none(request):
                    'equity_accounts': equity_accounts,
                    'income_accounts': income_accounts,
                    'transactions': transactions,})
-
-def compute_balances(request):
-    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
-    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
-    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
-    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
-    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
-
-    categories = {}
-    balances = {}
-
-    category_objs = AccountType.objects.all()
-    for category_obj in category_objs:
-        categories[category_obj.name] = ""
-        
-    account_objs = Account.objects.all()
-    account_multiplier = {}
-    account_category = {}
-    for account_obj in account_objs:
-        account_multiplier[account_obj.short_name] = account_obj.type.sign_modifier
-        account_category[account_obj.short_name] = account_obj.type.name
-        balances[account_obj.short_name] = 0
     
-    transactions = Transaction.objects.all()
-    for transaction in transactions:
-        debit_acct = transaction.debit.short_name
-        credit_acct = transaction.credit.short_name
-
-        balances[debit_acct] += transaction.value * account_multiplier[debit_acct]
-        balances[credit_acct] -= transaction.value * account_multiplier[credit_acct]
-
-    result = []
-    for acct in sorted(balances):
-        categories[account_category[acct]] += str(acct) + " " + str(balances[acct]) + "<br>"
-        result.append(str(acct) + " " + account_category[acct] + str(balances[acct]))
-
-    # print(categories)
-    return render(request, 'alesheets/computedbal.html',
-                  {'asset_accounts': asset_accounts,
-                   'expense_accounts': expense_accounts,
-                   'liability_accounts': liability_accounts,
-                   'equity_accounts': equity_accounts,
-                   'income_accounts': income_accounts,
-                   'categories': categories,})
         
 def user_login(request):
     username = request.POST['username']

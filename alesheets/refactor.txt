@@ -1,13 +1,37 @@
->> remove html from views.py
+>> instead of hitting database for each account to compute its balance, hit
+database once to get all transactions and loop through them
 
->> search for earliest transaction date and use it as "beginning of time"
+>> using tree view, clicking on it refreshes right hand transaction side
+
+>> save short list of commonly accessed accounts
+
+>> import transactions?
+
+>> use account.id instead of short name to match accounts
+
+>> in transactions page, show accounts as part of full tree hierarchy:
+Assets > Bradesco > Conta corrente (pre-compute this value and save as
+TreeName, update when accounts get renamed)
+
+>> link account owner to Django user
+from django.contrib.auth.models import User
+owner = models.ForeignKey(User)
+
+>> save balance as part of model, propagate changes when transactions are
+added. It looks like re-computing balances every time is too slow
+Balances will change on adding, editing, and deleting transactions
+
+>> add tags to transactions, with many-to-many fields. Can be used to mark
+people's names
+
+>> remove html from views.py
 
 >> create module for transactions and accounts outside views.py
 
 >> use tablesorter
 
 >> save "global" time window in session or url so that clicking on different
-links looks only at transactions in this time window
+links looks only at transactions in this time window (e.g. this month)
 
 >> create functions that retrieve transactions matching account name and
 dates. 
