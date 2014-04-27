@@ -1,3 +1,6 @@
+>> perhaps slowness is due to transaction to debit/credit foreign keys, try
+saving those as string of the short name
+
 >> instead of hitting database for each account to compute its balance, hit
 database once to get all transactions and loop through them
 
