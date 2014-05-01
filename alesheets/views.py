@@ -240,77 +240,77 @@ def show_account_all(request, short_name):
                    'balance_change': "%.2f" % balance_change,
                    'report_type': "All transactions", })
 
-def get_balance_html(account):
-    balance = 0
+# def get_balance_html(account):
+#     balance = 0
     
-    debit_transactions = Transaction.objects.select_related('debit').filter(debit=account)
-    credit_transactions = Transaction.objects.select_related('credit').filter(credit=account)
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
+#     debit_transactions = Transaction.objects.select_related('debit').filter(debit=account)
+#     credit_transactions = Transaction.objects.select_related('credit').filter(credit=account)
+#     #raw_transactions = sorted(chain(debit_transactions,
+#     #                                credit_transactions),
+#     #                          key=lambda tr: tr.date)
+#     raw_transactions = chain(debit_transactions, credit_transactions)
     
-    for transaction in raw_transactions:
-        sign = account.type.sign_modifier
-        if str(transaction.credit) == str(account.short_name):
-            sign *= -1
-        balance += sign * transaction.value
-    return '<tr><td><a href="/alesheets/account/%s/">%s</a></td><td align="right">%.2f</td></tr>' % (account.short_name, account.short_name, balance)
+#     for transaction in raw_transactions:
+#         sign = account.type.sign_modifier
+#         if str(transaction.credit) == str(account.short_name):
+#             sign *= -1
+#         balance += sign * transaction.value
+#     return '<tr><td><a href="/alesheets/account/%s/">%s</a></td><td align="right">%.2f</td></tr>' % (account.short_name, account.short_name, balance)
 
-def get_balance_value(account):
-    balance = 0
+# def get_balance_value(account):
+#     balance = 0
 
-    debit_transactions = Transaction.objects.select_related('debit').filter(debit=account)
-    credit_transactions = Transaction.objects.select_related('credit').filter(credit=account)
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
+#     debit_transactions = Transaction.objects.select_related('debit').filter(debit=account)
+#     credit_transactions = Transaction.objects.select_related('credit').filter(credit=account)
+#     #raw_transactions = sorted(chain(debit_transactions,
+#     #                                credit_transactions),
+#     #                          key=lambda tr: tr.date)
+#     raw_transactions = chain(debit_transactions, credit_transactions)
     
-    for transaction in raw_transactions:
-        sign = account.type.sign_modifier
-        if str(transaction.credit) == str(account.short_name):
-            sign *= -1
-        balance += sign * transaction.value
-    return balance
+#     for transaction in raw_transactions:
+#         sign = account.type.sign_modifier
+#         if str(transaction.credit) == str(account.short_name):
+#             sign *= -1
+#         balance += sign * transaction.value
+#     return balance
 
-def get_balance_html_latest(account, days_back):
-    balance = 0
-    debit_transactions = Transaction.objects.filter(debit=account,
-                    date__gte=(datetime.today()-timedelta(days=days_back)))
+# def get_balance_html_latest(account, days_back):
+#     balance = 0
+#     debit_transactions = Transaction.objects.filter(debit=account,
+#                     date__gte=(datetime.today()-timedelta(days=days_back)))
 
-    credit_transactions = Transaction.objects.filter(credit=account,
-                    date__gte=(datetime.today()-timedelta(days=days_back)))
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
+#     credit_transactions = Transaction.objects.filter(credit=account,
+#                     date__gte=(datetime.today()-timedelta(days=days_back)))
+#     #raw_transactions = sorted(chain(debit_transactions,
+#     #                                credit_transactions),
+#     #                          key=lambda tr: tr.date)
+#     raw_transactions = chain(debit_transactions, credit_transactions)
     
-    for transaction in raw_transactions:
-        sign = account.type.sign_modifier
-        if str(transaction.credit) == str(account.short_name):
-            sign *= -1
-        balance += sign * transaction.value
-    return '<tr><td><a href="/alesheets/account/%s/">%s</a></td><td align="right">%.2f</td></tr>' % (account.short_name, account.short_name, balance)
+#     for transaction in raw_transactions:
+#         sign = account.type.sign_modifier
+#         if str(transaction.credit) == str(account.short_name):
+#             sign *= -1
+#         balance += sign * transaction.value
+#     return '<tr><td><a href="/alesheets/account/%s/">%s</a></td><td align="right">%.2f</td></tr>' % (account.short_name, account.short_name, balance)
 
-def get_balance_value_latest(account, days_back):
-    balance = 0
+# def get_balance_value_latest(account, days_back):
+#     balance = 0
 
-    debit_transactions = Transaction.objects.filter(debit=account,
-                        date__gte=(datetime.today()-timedelta(days=days_back)))
-    credit_transactions = Transaction.objects.filter(credit=account,
-                        date__gte=(datetime.today()-timedelta(days=days_back)))
-    #raw_transactions = sorted(chain(debit_transactions,
-    #                                credit_transactions),
-    #                          key=lambda tr: tr.date)
-    raw_transactions = chain(debit_transactions, credit_transactions)
+#     debit_transactions = Transaction.objects.filter(debit=account,
+#                         date__gte=(datetime.today()-timedelta(days=days_back)))
+#     credit_transactions = Transaction.objects.filter(credit=account,
+#                         date__gte=(datetime.today()-timedelta(days=days_back)))
+#     #raw_transactions = sorted(chain(debit_transactions,
+#     #                                credit_transactions),
+#     #                          key=lambda tr: tr.date)
+#     raw_transactions = chain(debit_transactions, credit_transactions)
         
-    for transaction in raw_transactions:
-        sign = account.type.sign_modifier
-        if str(transaction.credit) == str(account.short_name):
-            sign *= -1
-        balance += sign * transaction.value
-    return balance
+#     for transaction in raw_transactions:
+#         sign = account.type.sign_modifier
+#         if str(transaction.credit) == str(account.short_name):
+#             sign *= -1
+#         balance += sign * transaction.value
+#     return balance
 
 def get_balance_not_shown(account):
     balance = 0
@@ -330,68 +330,68 @@ def get_balance_not_shown(account):
         balance += sign * transaction.value
     return balance
 
-@login_required
-def show_balances(request):
-    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
-    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
-    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
-    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
-    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+# @login_required
+# def show_balances(request):
+#     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+#     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+#     liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+#     equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+#     income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
 
-    account_types = [asset_accounts, expense_accounts, liability_accounts,
-                     equity_accounts, income_accounts]
-    type_balances = []
-    type_totals = []
-    for type in account_types:
-        # map get_balance for all accounts in asset_accounts,
-        # expense_accounts, etc. then place it in type_balances
-        type_balances.append(map(get_balance_html, type))
-        type_totals.append("%.2f" % sum(map(get_balance_value, type)))
+#     account_types = [asset_accounts, expense_accounts, liability_accounts,
+#                      equity_accounts, income_accounts]
+#     type_balances = []
+#     type_totals = []
+#     for type in account_types:
+#         # map get_balance for all accounts in asset_accounts,
+#         # expense_accounts, etc. then place it in type_balances
+#         type_balances.append(map(get_balance_html, type))
+#         type_totals.append("%.2f" % sum(map(get_balance_value, type)))
         
-    return render(request, 'alesheets/showbalances.html',
-                  {'type_balances': type_balances,
-                   'type_totals': type_totals,
-                   'asset_accounts': asset_accounts,
-                   'expense_accounts': expense_accounts,
-                   'liability_accounts': liability_accounts,
-                   'equity_accounts': equity_accounts,
-                   'income_accounts': income_accounts,
-                   'report_type': "All transactions", })
+#     return render(request, 'alesheets/showbalances.html',
+#                   {'type_balances': type_balances,
+#                    'type_totals': type_totals,
+#                    'asset_accounts': asset_accounts,
+#                    'expense_accounts': expense_accounts,
+#                    'liability_accounts': liability_accounts,
+#                    'equity_accounts': equity_accounts,
+#                    'income_accounts': income_accounts,
+#                    'report_type': "All transactions", })
 
-@login_required
-def balance_changes(request, days_back):
-    asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
-    expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
-    liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
-    equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
-    income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
+# @login_required
+# def balance_changes(request, days_back):
+#     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
+#     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
+#     liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
+#     equity_accounts = Account.objects.filter(type__name="Equity").order_by('short_name')
+#     income_accounts = Account.objects.filter(type__name="Income").order_by('short_name')
 
-    account_types = [asset_accounts, expense_accounts, liability_accounts,
-                     equity_accounts, income_accounts]
-    type_balances = []
-    type_totals = []
+#     account_types = [asset_accounts, expense_accounts, liability_accounts,
+#                      equity_accounts, income_accounts]
+#     type_balances = []
+#     type_totals = []
 
-    def get_balance_html_wrapper(x):
-        return get_balance_html_latest(x, int(days_back))
+#     def get_balance_html_wrapper(x):
+#         return get_balance_html_latest(x, int(days_back))
 
-    def get_balance_value_wrapper(x):
-        return get_balance_value_latest(x, int(days_back))
+#     def get_balance_value_wrapper(x):
+#         return get_balance_value_latest(x, int(days_back))
     
-    for type in account_types:
-        # map get_balance for all accounts in asset_accounts,
-        # expense_accounts, etc. then place it in type_balances
-        type_balances.append(map(get_balance_html_wrapper, type))
-        type_totals.append("%.2f" % sum(map(get_balance_value_wrapper, type)))
+#     for type in account_types:
+#         # map get_balance for all accounts in asset_accounts,
+#         # expense_accounts, etc. then place it in type_balances
+#         type_balances.append(map(get_balance_html_wrapper, type))
+#         type_totals.append("%.2f" % sum(map(get_balance_value_wrapper, type)))
         
-    return render(request, 'alesheets/showbalances.html',
-                  {'type_balances': type_balances,
-                   'type_totals': type_totals,
-                   'asset_accounts': asset_accounts,
-                   'expense_accounts': expense_accounts,
-                   'liability_accounts': liability_accounts,
-                   'equity_accounts': equity_accounts,
-                   'income_accounts': income_accounts,
-                   'report_type': "Transactions in the last " + days_back + " days", })
+#     return render(request, 'alesheets/showbalances.html',
+#                   {'type_balances': type_balances,
+#                    'type_totals': type_totals,
+#                    'asset_accounts': asset_accounts,
+#                    'expense_accounts': expense_accounts,
+#                    'liability_accounts': liability_accounts,
+#                    'equity_accounts': equity_accounts,
+#                    'income_accounts': income_accounts,
+#                    'report_type': "Transactions in the last " + days_back + " days", })
 
 def search_transactions(request, keyword):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
