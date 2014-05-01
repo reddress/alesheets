@@ -1,21 +1,63 @@
 <html>
   <body>
     {% include "alesheets/allaccts.html" %}
-    <pre>
-      {% for acct in balances %}{{ acct }}{{ acct.value }}
-      {% endfor %}
-    </pre>
+    <b>
+      Transactions in the last {{ days_back }} days
+    </b>
+    
+    <table width="700" border="1">
+        <tr>
+          
+          <td width="20%" valign="top" align="right">
+            <table border="1" valign="top">Assets
     {% autoescape off %}
     {{ categories.Asset }}
-
+    {% endautoescape %}
+            </table>
+          </td>
+          
+          <td width="20%" valign="top" align="right">
+            <table border="1" valign="top">Expenses
+    {% autoescape off %}
     {{ categories.Expense }}
-
+    {% endautoescape %}
+            </table>
+          </td>
+          
+          <td width="20%" valign="top" align="right">
+            <table border="1" valign="top">Liabilities
+    {% autoescape off %}
     {{ categories.Liability }}
-
+    {% endautoescape %}
+            </table>
+          </td>
+          
+          <td width="20%" valign="top" align="right">
+            <table border="1" valign="top">Equity
+    {% autoescape off %}
     {{ categories.Equity }}
-
+    {% endautoescape %}
+            </table>
+          </td>
+          
+          <td width="20%" valign="top" align="right">
+            <table border="1" valign="top">Income
+    {% autoescape off %}
     {{ categories.Income }}
     {% endautoescape %}
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td align="right">total: {{ totals.Asset }}</td>
+          <td align="right">total: {{ totals.Expense }}</td>
+          <td align="right">total: {{ totals.Liability }}</td>
+          <td align="right">total: {{ totals.Equity }}</td>
+          <td align="right">total: {{ totals.Income }}</td>
+        </tr>
+        
+    </table>
+    
   </body>
 </html>
 

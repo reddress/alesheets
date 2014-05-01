@@ -243,8 +243,8 @@ def show_account_all(request, short_name):
 def get_balance_html(account):
     balance = 0
     
-    debit_transactions = Transaction.objects.filter(debit=account)
-    credit_transactions = Transaction.objects.filter(credit=account)
+    debit_transactions = Transaction.objects.select_related('debit').filter(debit=account)
+    credit_transactions = Transaction.objects.select_related('credit').filter(credit=account)
     #raw_transactions = sorted(chain(debit_transactions,
     #                                credit_transactions),
     #                          key=lambda tr: tr.date)
@@ -260,8 +260,8 @@ def get_balance_html(account):
 def get_balance_value(account):
     balance = 0
 
-    debit_transactions = Transaction.objects.filter(debit=account)
-    credit_transactions = Transaction.objects.filter(credit=account)
+    debit_transactions = Transaction.objects.select_related('debit').filter(debit=account)
+    credit_transactions = Transaction.objects.select_related('credit').filter(credit=account)
     #raw_transactions = sorted(chain(debit_transactions,
     #                                credit_transactions),
     #                          key=lambda tr: tr.date)
@@ -427,7 +427,7 @@ def search_none(request):
                    'income_accounts': income_accounts,
                    'transactions': transactions,})
 
-def compute_balances(request):
+def compute_balances(request, days_back=-1):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
     liability_accounts = Account.objects.filter(type__name="Liability").order_by('short_name')
@@ -436,10 +436,13 @@ def compute_balances(request):
 
     categories = {}
     balances = {}
+    totals = {}
 
     category_objs = AccountType.objects.all()
+
     for category_obj in category_objs:
         categories[category_obj.name] = ""
+        totals[category_obj.name] = 0
         
     account_objs = Account.objects.all()
     account_multiplier = {}
@@ -448,8 +451,12 @@ def compute_balances(request):
         account_multiplier[account_obj.short_name] = account_obj.type.sign_modifier
         account_category[account_obj.short_name] = account_obj.type.name
         balances[account_obj.short_name] = 0
-    
-    transactions = Transaction.objects.all()
+
+    if int(days_back) < 0:
+        transactions = Transaction.objects.select_related('debit', 'credit').all()
+    else:
+        transactions = Transaction.objects.select_related('debit', 'credit').filter(date__gte=(datetime.today()-timedelta(days=int(days_back))))
+        
     for transaction in transactions:
         debit_acct = transaction.debit.short_name
         credit_acct = transaction.credit.short_name
@@ -457,11 +464,18 @@ def compute_balances(request):
         balances[debit_acct] += transaction.value * account_multiplier[debit_acct]
         balances[credit_acct] -= transaction.value * account_multiplier[credit_acct]
 
-    result = []
+    # result = []
     for acct in sorted(balances):
-        categories[account_category[acct]] += str(acct) + " " + str(balances[acct]) + "<br>"
-        result.append(str(acct) + " " + account_category[acct] + str(balances[acct]))
+        acct_bal = "%.2f" % balances[acct]
+        totals[account_category[acct]] += balances[acct]
+        categories[account_category[acct]] += '<tr><td><a href="/alesheets/account/' + str(acct) + '/">' + str(acct) + '</a></td><td align="right">' + str(acct_bal) + "</td></tr>"
+        # result.append(str(acct) + "??? " + account_category[acct] + str(balances[acct]))
 
+    for category in totals:
+        totals[category] = "%.2f" % totals[category]
+
+    if int(days_back) < 0:
+        days_back = "(all)"
     # print(categories)
     return render(request, 'alesheets/computedbal.html',
                   {'asset_accounts': asset_accounts,
@@ -469,6 +483,8 @@ def compute_balances(request):
                    'liability_accounts': liability_accounts,
                    'equity_accounts': equity_accounts,
                    'income_accounts': income_accounts,
+                   'days_back': days_back,
+                   'totals': totals,
                    'categories': categories,})
         
 def user_login(request):
