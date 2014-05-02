@@ -393,6 +393,7 @@ def get_balance_not_shown(account):
 #                    'income_accounts': income_accounts,
 #                    'report_type': "Transactions in the last " + days_back + " days", })
 
+@login_required
 def search_transactions(request, keyword):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
@@ -409,7 +410,7 @@ def search_transactions(request, keyword):
                    'equity_accounts': equity_accounts,
                    'income_accounts': income_accounts,
                    'transactions': transactions,})
-
+@login_required
 def search_none(request):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
@@ -427,6 +428,7 @@ def search_none(request):
                    'income_accounts': income_accounts,
                    'transactions': transactions,})
 
+@login_required
 def compute_balances(request, days_back=-1):
     asset_accounts = Account.objects.filter(type__name="Asset").order_by('short_name')
     expense_accounts = Account.objects.filter(type__name="Expense").order_by('short_name')
