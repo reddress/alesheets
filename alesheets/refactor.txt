@@ -1,16 +1,17 @@
->> perhaps slowness is due to transaction to debit/credit foreign keys, try
-saving those as string of the short name
+## perhaps slowness is due to transaction to debit/credit foreign keys, try
+saving those as string of the short name - SOLVED WITH SELECT_RELATED()
 
->> instead of hitting database for each account to compute its balance, hit
-database once to get all transactions and loop through them
+## instead of hitting database for each account to compute its balance, hit
+database once to get all transactions and loop through them - DONE
 
 >> using tree view, clicking on it refreshes right hand transaction side
 
->> save short list of commonly accessed accounts
+## save short list of commonly accessed accounts NOT NEEDED
 
->> import transactions?
+## import transactions? - TOO LAZY TO IMPLEMENT
 
->> use account.id instead of short name to match accounts
+## use account.id instead of short name to match accounts - NO, FOREIGN KEY
+IS OK WITH SELECT_RELATED()
 
 >> in transactions page, show accounts as part of full tree hierarchy:
 Assets > Bradesco > Conta corrente (pre-compute this value and save as
