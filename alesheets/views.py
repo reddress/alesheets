@@ -91,9 +91,11 @@ def show_category(request, category_name, days_back):
         if formatted_day not in daily_totals:
             daily_totals[formatted_day] = 0
 
+    def rearrange_date(date_string):
+        return datetime.strptime(date_string, "%Y-%m-%d").strftime("%d/%m/%Y %a")
     daily_totals_pair = []
     for day in reversed(sorted(daily_totals)):
-        daily_totals_pair.append((day, daily_totals[day]))
+        daily_totals_pair.append((rearrange_date(day), daily_totals[day]))
 
     credit_transactions = Transaction.objects.filter(credit__type__name=category_name)
     
