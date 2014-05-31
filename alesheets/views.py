@@ -76,12 +76,20 @@ def show_category(request, category_name, days_back):
     total = sum([tr.value for tr in sorted_transactions])
 
     daily_totals = {}
+    
     for tr in sorted_transactions:
         short_date = "%s-%02d-%02d" % (tr.date.year, tr.date.month, tr.date.day)
         if short_date not in daily_totals:
             daily_totals[short_date] = tr.value
         else:
             daily_totals[short_date] += tr.value
+
+    # set nonexistent days to 0.00 (decimal places formatted in template)
+    today = datetime.today()
+    for day in range(int(days_back)):
+        formatted_day = (today - timedelta(days=day)).strftime("%Y-%m-%d")
+        if formatted_day not in daily_totals:
+            daily_totals[formatted_day] = 0
 
     daily_totals_pair = []
     for day in reversed(sorted(daily_totals)):
